@@ -1,0 +1,80 @@
+﻿@model HUB.Models.BreedListResponse
+
+@{
+    ViewData["Title"] = "Dog Breeds List";
+}
+
+<h1 class="text-center">Dog Breeds List</h1>
+
+@if (Model.Status == "success")
+{
+    <div class="accordion" id="breedsAccordion" style="max-height: 350px; overflow-y: auto;">
+        @foreach (var breed in Model.Message)
+        {
+            <div class="card">
+                <div class="card-header" id="heading-@breed.Key">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse-@breed.Key" aria-expanded="true" aria-controls="collapse-@breed.Key" onclick="fetchBreedImage('@breed.Key')">
+                            @breed.Key
+                        </button>
+                    </h2>
+                </div>
+
+                <div id="collapse-@breed.Key" class="collapse" aria-labelledby="heading-@breed.Key" data-parent="#breedsAccordion">
+                    <div class="card-body">
+                        @if (breed.Value.Length > 0)
+                        {
+                            <ul class="list-unstyled">
+                                @foreach (var subBreed in breed.Value)
+                                {
+                                    <li>@subBreed</li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p>No sub-breeds available.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div id="breedImageContainer" class="text-center mt-4">
+        <h2>Selected Breed Image</h2>
+        <img id="breedImage" src="" alt="Breed image will be displayed here" style="max-width: 400px;" />
+    </div>
+}
+else
+{
+    <div class="alert alert-danger text-center">
+        Unable to retrieve dog breeds.
+    </div>
+}
+
+<div class="text-center mt-3">
+    <a href="@Url.Action("Index")" class="btn btn-primary">Back to Random Dog Image</a>
+</div>
+
+@section Scripts {
+    <script>
+        function fetchBreedImage(breed) {
+            const apiUrl = `https://dog.ceo/api/breed/${breed}/images/random`;
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        document.getElementById('breedImage').src = data.message;
+                    } else {
+                        alert('Error fetching image for ' + breed);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error fetching image for ' + breed);
+                });
+        }
+    </script>
+}

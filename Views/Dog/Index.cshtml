@@ -1,0 +1,26 @@
+﻿@model HUB.Models.DogResponse
+
+@{
+    ViewData["Title"] = "Random Dog Image";
+}
+
+<h1 class="text-center">Random Dog Image</h1>
+
+@if (Model.Status == "success")
+{
+    <div class="card mx-auto" style="width: 20rem; margin-top: 20px;">
+        <img src="@Model.Message" class="card-img-top" alt="A random @Model.Breed" />
+        <div class="card-body text-center">
+            <h5 class="card-title">Breed: @Model.Breed</h5>
+            <a href="@Url.Action("Index")" class="btn btn-primary">Get Another Dog Image</a> <br /> <br />
+
+            <a href="@Url.Action("BreedsList")" class="btn btn-secondary">View Dog Breeds List</a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger text-center">
+        @Model.Message
+    </div>
+}
